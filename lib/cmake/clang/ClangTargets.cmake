@@ -4,7 +4,7 @@ if("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 2.6)
    message(FATAL_ERROR "CMake >= 2.6.0 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.6...3.20)
+cmake_policy(VERSION 2.6...3.21)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -16,7 +16,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_targetsDefined)
 set(_targetsNotDefined)
 set(_expectedTargets)
-foreach(_expectedTarget clangBasic clangAPINotes clangLex clangParse clangAST clangDynamicASTMatchers clangASTMatchers clangCrossTU clangSema clangCodeGen clangAnalysis clangAnalysisFlowSensitive clangEdit clangRewrite clangDriver clangSerialization clangRewriteFrontend clangFrontend clangFrontendTool clangToolingCore clangToolingInclusions clangToolingRefactoring clangToolingASTDiff clangToolingSyntax clangToolingSyntaxPseudo clangDependencyScanning clangTransformer clangTooling clangDirectoryWatcher clangIndex clangIndexSerialization clangStaticAnalyzerCore clangStaticAnalyzerCheckers clangStaticAnalyzerFrontend clangFormat clangTesting clangInterpreter diagtool clang clang-format clangHandleCXX clangHandleLLVM clang-offload-bundler clang-offload-wrapper clang-scan-deps clang-repl clang-pseudo clang-rename clang-refactor clang-cpp libclang)
+foreach(_expectedTarget clangBasic clangAPINotes clangLex clangParse clangAST clangDynamicASTMatchers clangASTMatchers clangCrossTU clangSema clangCodeGen clangAnalysis clangAnalysisFlowSensitive clangAnalysisFlowSensitiveModels clangEdit clangExtractAPI clangRewrite clangDriver clangSerialization clangRewriteFrontend clangFrontend clangFrontendTool clangToolingCore clangToolingInclusions clangToolingRefactoring clangToolingASTDiff clangToolingSyntax clangDependencyScanning clangTransformer clangTooling clangDirectoryWatcher clangIndex clangIndexSerialization clangStaticAnalyzerCore clangStaticAnalyzerCheckers clangStaticAnalyzerFrontend clangFormat clangInterpreter clangSupport diagtool clang clang-format clangHandleCXX clangHandleLLVM clang-offload-packager clang-offload-bundler clang-offload-wrapper clang-scan-deps clang-repl clang-rename clang-refactor clang-cpp libclang)
   list(APPEND _expectedTargets ${_expectedTarget})
   if(NOT TARGET ${_expectedTarget})
     list(APPEND _targetsNotDefined ${_expectedTarget})
@@ -131,7 +131,14 @@ set_target_properties(clangAnalysis PROPERTIES
 add_library(clangAnalysisFlowSensitive STATIC IMPORTED)
 
 set_target_properties(clangAnalysisFlowSensitive PROPERTIES
-  INTERFACE_LINK_LIBRARIES "clangAnalysis;clangAST;LLVMFrontendOpenMP;LLVMSupport"
+  INTERFACE_LINK_LIBRARIES "clangAnalysis;clangAST;clangBasic;LLVMFrontendOpenMP;LLVMSupport"
+)
+
+# Create imported target clangAnalysisFlowSensitiveModels
+add_library(clangAnalysisFlowSensitiveModels STATIC IMPORTED)
+
+set_target_properties(clangAnalysisFlowSensitiveModels PROPERTIES
+  INTERFACE_LINK_LIBRARIES "clangAnalysis;clangAnalysisFlowSensitive;clangAST;clangASTMatchers;clangBasic;LLVMFrontendOpenMP;LLVMSupport"
 )
 
 # Create imported target clangEdit
@@ -139,6 +146,13 @@ add_library(clangEdit STATIC IMPORTED)
 
 set_target_properties(clangEdit PROPERTIES
   INTERFACE_LINK_LIBRARIES "clangAST;clangBasic;clangLex;LLVMSupport"
+)
+
+# Create imported target clangExtractAPI
+add_library(clangExtractAPI STATIC IMPORTED)
+
+set_target_properties(clangExtractAPI PROPERTIES
+  INTERFACE_LINK_LIBRARIES "clangAST;clangBasic;clangFrontend;clangIndex;clangLex;LLVMSupport"
 )
 
 # Create imported target clangRewrite
@@ -180,7 +194,7 @@ set_target_properties(clangFrontend PROPERTIES
 add_library(clangFrontendTool STATIC IMPORTED)
 
 set_target_properties(clangFrontendTool PROPERTIES
-  INTERFACE_LINK_LIBRARIES "clangBasic;clangCodeGen;clangDriver;clangFrontend;clangRewriteFrontend;LLVMOption;LLVMSupport"
+  INTERFACE_LINK_LIBRARIES "clangBasic;clangCodeGen;clangDriver;clangExtractAPI;clangFrontend;clangRewriteFrontend;LLVMOption;LLVMSupport"
 )
 
 # Create imported target clangToolingCore
@@ -216,13 +230,6 @@ add_library(clangToolingSyntax STATIC IMPORTED)
 
 set_target_properties(clangToolingSyntax PROPERTIES
   INTERFACE_LINK_LIBRARIES "clangAST;clangBasic;clangFrontend;clangLex;clangToolingCore;LLVMSupport"
-)
-
-# Create imported target clangToolingSyntaxPseudo
-add_library(clangToolingSyntaxPseudo STATIC IMPORTED)
-
-set_target_properties(clangToolingSyntaxPseudo PROPERTIES
-  INTERFACE_LINK_LIBRARIES "clangBasic;clangLex;LLVMSupport"
 )
 
 # Create imported target clangDependencyScanning
@@ -295,18 +302,18 @@ set_target_properties(clangFormat PROPERTIES
   INTERFACE_LINK_LIBRARIES "clangBasic;clangLex;clangToolingCore;clangToolingInclusions;LLVMSupport"
 )
 
-# Create imported target clangTesting
-add_library(clangTesting STATIC IMPORTED)
-
-set_target_properties(clangTesting PROPERTIES
-  INTERFACE_LINK_LIBRARIES "LLVMSupport"
-)
-
 # Create imported target clangInterpreter
 add_library(clangInterpreter STATIC IMPORTED)
 
 set_target_properties(clangInterpreter PROPERTIES
   INTERFACE_LINK_LIBRARIES "clangAST;clangAnalysis;clangBasic;clangDriver;clangEdit;clangFrontend;clangLex;clangParse;clangSema;clangSerialization;clangCodeGen;clangFrontendTool;LLVMCore;LLVMOption;LLVMOrcJIT;LLVMSupport;LLVMTarget"
+)
+
+# Create imported target clangSupport
+add_library(clangSupport STATIC IMPORTED)
+
+set_target_properties(clangSupport PROPERTIES
+  INTERFACE_LINK_LIBRARIES "LLVMSupport"
 )
 
 # Create imported target diagtool
@@ -332,6 +339,9 @@ set_target_properties(clangHandleLLVM PROPERTIES
   INTERFACE_LINK_LIBRARIES "LLVMAnalysis;LLVMCodeGen;LLVMCore;LLVMExecutionEngine;LLVMipo;LLVMIRReader;LLVMMC;LLVMMCJIT;LLVMObject;LLVMRuntimeDyld;LLVMSelectionDAG;LLVMSupport;LLVMTarget;LLVMTransformUtils"
 )
 
+# Create imported target clang-offload-packager
+add_executable(clang-offload-packager IMPORTED)
+
 # Create imported target clang-offload-bundler
 add_executable(clang-offload-bundler IMPORTED)
 
@@ -343,9 +353,6 @@ add_executable(clang-scan-deps IMPORTED)
 
 # Create imported target clang-repl
 add_executable(clang-repl IMPORTED)
-
-# Create imported target clang-pseudo
-add_executable(clang-pseudo IMPORTED)
 
 # Create imported target clang-rename
 add_executable(clang-rename IMPORTED)
